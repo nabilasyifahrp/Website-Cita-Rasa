@@ -36,7 +36,7 @@
                     <p class="image-text"><B>Choco Banana Roll</B></p>
                 </div>
             </div>
-            <a href="#about" class="order-btn"><b>Order Now</b></a>
+            <a href="#menu" class="order-btn"><b>Order Now</b></a>
         </div>
     </section>
 
@@ -59,32 +59,99 @@
         </div>
     </section>
 
-    <script>
-        function toggleMenu() {
-            const menu = document.querySelector('.navbar-menu');
-            menu.classList.toggle('show');
-        }
+    <div class="container">
+        <section id="menu">
+            <h2>Our Menu</h2>
+            <div class="menu">
+                <div class="item">
+                    <img src="choco2.jpg" alt="FOTO BANANA ROLL">
+                    <div class="item-details">
+                        <h3>Choco Banana Roll <br> (Rp 13,000)</h3>
+                        <p>Coklat Manis Meleleh</p>
+                        <button class="order-btn" onclick="addToBasket('Onion Ring', 13000)">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <img src="pizza.jpg" alt="FOTO PIZZA BREAD">
+                    <div class="item-details">
+                        <h3>Pizza Bread <br> (Rp 11,000)</h3>
+                        <p>Roti Gurih dan Nikmat</p>
+                        <button class="order-btn" onclick="addToBasket('Pudding Cokelat', 11000)">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        let currentIndex = 0;
-        const slides = document.querySelectorAll('.slides img');
-        const totalSlides = slides.length;
+        <section id="basket" class="basket">
+            <h2>Your Cart</h2>
+            <ul id="basket-list" class="basket-list"></ul>
+            <div id="total" class="total">Total: Rp 0</div>
+            <button class="order-btn" onclick="checkout()">Checkout</button>
+        </section>
 
-        function updateSlidePosition() {
-            const offset = -currentIndex * 100; 
-            document.querySelector('.slides').style.transform = `translateX(${offset}%)`;
-        }
+        <section id="contact">
+            <h2>Contact us</h2>
+            <p>+62 812-8960-7597</p>
+            <button onclick="copy()" class="order-btn" style="margin-top: 0px;">Copy to clipboard</button>
+        </section>
+    </div>
+</main>
+</div>
 
-        function nextSlide() {
-            currentIndex = (currentIndex + 1) % totalSlides; 
-            updateSlidePosition();
-        }
 
-        function prevSlide() {
-            currentIndex = (currentIndex - 1 + totalSlides) % totalSlides; 
-            updateSlidePosition();
-        }
 
-        setInterval(nextSlide, 3000); 
-    </script>
+<script>
+let basket = [];
+let total = 0;
+
+function addToBasket(item, price) {
+    basket.push({ item, price });
+    updateBasket();
+}
+
+function updateBasket() {
+    const basketList = document.getElementById('basket-list');
+    const totalDisplay = document.getElementById('total');
+    
+    basketList.innerHTML = '';
+    total = 0;
+
+    basket.forEach((entry, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <span>${entry.item}</span>
+            <span>Rp ${entry.price.toLocaleString()}</span>
+            <button onclick="removeFromBasket(${index})" class="order-btn">Remove</button>
+        `;
+        basketList.appendChild(li);
+        total += entry.price;
+    });
+
+    totalDisplay.textContent = `Total: Rp ${total.toLocaleString()}`;
+}
+
+function removeFromBasket(index) {
+    basket.splice(index, 1);
+    updateBasket();
+}
+
+function checkout() {
+    if (basket.length === 0) {
+        alert('Your cart is empty!');
+        return;
+    }
+
+    const order = basket.map(entry => `${entry.item} - Rp ${entry.price.toLocaleString()}`).join('%0A');
+    const whatsappUrl = `https://wa.me/6281289607597?text=My%20Order:%0A${order}%0ATotal:%20Rp%20${total.toLocaleString()}`;
+    window.open(whatsappUrl, '_blank');
+}
+
+function copy() {
+    navigator.clipboard.writeText("+62 812-8960-7597");
+    alert("Copied!");
+}
+</script>
+
+
 </body>
 </html>
